@@ -1,15 +1,26 @@
 package com.example.newsapp.ui.theme
 
+import com.example.newsapp.R
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
+val PlusJakartaSans = FontFamily(
+    Font(R.font.plusjakartasans_regular, FontWeight.Normal),
+    Font(R.font.plusjakartasans_bold, FontWeight.Bold),
+    Font(R.font.plusjakartasans_medium, FontWeight.Medium),
+    Font(R.font.plusjakartasans_semibold, FontWeight.SemiBold)
+)
+val PlayfairDisplay = FontFamily(
+    Font(R.font.playfair1, FontWeight.Normal),
+)
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = PlusJakartaSans,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,

@@ -89,6 +89,10 @@ com.example.newsapp
 │   │   ├── CategoryChip.kt
 │   │   └── LoadingScreen.kt
 │   │
+│   ├── onBoarding
+│   │   └── OnBoardingScreen.kt
+│   │   └── OnBoardingPage.kt
+│   │
 │   └── utils 
 |         ├── constants 
 |         │   ├── ApiConstants.kt
