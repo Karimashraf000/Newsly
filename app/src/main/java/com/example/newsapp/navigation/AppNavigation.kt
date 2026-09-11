@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.newsapp.ui.home.HomeScreen
 import com.example.newsapp.ui.onboarding.OnboardingScreen
 
 @Composable
@@ -15,7 +14,7 @@ fun AppNavigation(){
         composable("onboarding"){
             OnboardingScreen  (
                 onFinished = {
-                    navController.navigate("home"){
+                    navController.navigate("main"){
                         popUpTo("onboarding") {
                             inclusive
                         }
@@ -23,8 +22,8 @@ fun AppNavigation(){
                 }
             )
         }
-        composable("home"){
-            HomeScreen()
+        composable("main") {
+            MainScreen()
         }
     }
 }

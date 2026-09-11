@@ -1,8 +1,12 @@
-package com.example.newsapp.ui
+package com.example.newsapp.navigation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -12,12 +16,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,6 +37,7 @@ import com.example.newsapp.ui.home.HomeScreen
 import com.example.newsapp.ui.search.SearchScreen
 import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.Primary
+import com.example.newsapp.ui.theme.TextSecondary
 
 @Composable
 fun MainScreen() {
@@ -38,8 +45,7 @@ fun MainScreen() {
 
     Scaffold(
         topBar = { MainTopAppBar() },
-        bottomBar = { MainBottomAppBar(navController) }
-    ) { innerPadding ->
+        bottomBar = { MainBottomAppBar(navController) }) { innerPadding ->
 
         NavHost(
             navController = navController,
@@ -66,29 +72,28 @@ fun MainScreen() {
 fun MainTopAppBar() {
     TopAppBar(
         title = {
-            Text(
-                text = "Newsly",
-                fontFamily = PlayfairDisplay,
-                color = Primary,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        navigationIcon = {
-            Image(
-                painter = painterResource(id = R.drawable.newsly_logo),
-                contentDescription = "Logo",
-                modifier = Modifier.size(35.dp).padding(5.dp)
-            )
-        },
-        actions = {
-            Icon(
-                Icons.Filled.Search,
-                contentDescription = "Search",
-                tint = Primary,
-                modifier = Modifier.padding(5.dp)
-            )
-        }
+        Text(
+            text = "Newsly",
+            fontFamily = PlayfairDisplay,
+            color = Primary,
+            fontWeight = FontWeight.Bold
         )
+    }, navigationIcon = {
+        Image(
+            painter = painterResource(id = R.drawable.newsly_logo),
+            contentDescription = "Logo",
+            modifier = Modifier
+                .size(35.dp)
+                .padding(5.dp)
+        )
+    }, actions = {
+        Icon(
+            Icons.Filled.Search,
+            contentDescription = "Search",
+            tint = Primary,
+            modifier = Modifier.padding(5.dp)
+        )
+    })
 }
 
 @Composable
@@ -99,52 +104,83 @@ fun MainBottomAppBar(
 
     val currentRoute = navBackStackEntry?.destination?.route
 
-    NavigationBar {
-        NavigationBarItem(
-            selected = currentRoute == "home",
-            onClick = {
-                navController.navigate("home")
-            },
-            icon = {
-                Icon(
-                    Icons.Filled.Home,
-                    contentDescription = "Home",
-                )
-            },
-            label = {
-                Text("Home")
-            }
-        )
+    Box(
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(30.dp)
+            ).padding(8.dp)
+    ) {
+        NavigationBar(
+            modifier = Modifier
+                .padding(0.dp)
+                .border(0.dp, Primary, shape = RoundedCornerShape(30.dp))
+                .height(67.dp)
+        ) {
+            NavigationBarItem(
+                selected = currentRoute == "home", onClick = {
+                    navController.navigate("home")
+                }, icon = {
+                    Icon(
+                        Icons.Filled.Home,
+                        contentDescription = "Home",
+                    )
+                }, label = {
+                    Text("Home")
+                }, colors = NavigationBarItemDefaults.colors(
 
-        NavigationBarItem(
-            selected = currentRoute == "search",
-            onClick = {
-                navController.navigate("search")
-            },
-            icon = {
-                Icon(
-                    Icons.Filled.Search,
-                    contentDescription = "Search",
+                    selectedIconColor = Primary,
+
+                    selectedTextColor = Primary,
+
+                    indicatorColor = Primary.copy(
+                        alpha = 0.12f
+                    ), unselectedIconColor = TextSecondary, unselectedTextColor = TextSecondary
                 )
-            },
-            label = {
-                Text("Search")
-            }
-        )
-        NavigationBarItem(
-            selected = currentRoute == "bookMarks",
-            onClick = {
-                navController.navigate("bookMarks")
-            },
-            icon = {
-                Icon(
-                    Icons.Filled.Favorite,
-                    contentDescription = "bookMarks",
+            )
+
+            NavigationBarItem(
+                selected = currentRoute == "search", onClick = {
+                    navController.navigate("search")
+                }, icon = {
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = "Search",
+                    )
+                }, label = {
+                    Text("Search")
+                }, colors = NavigationBarItemDefaults.colors(
+
+                    selectedIconColor = Primary,
+
+                    selectedTextColor = Primary,
+
+                    indicatorColor = Primary.copy(
+                        alpha = 0.12f
+                    ), unselectedIconColor = TextSecondary, unselectedTextColor = TextSecondary
                 )
-            },
-            label = {
-                Text("bookMarks")
-            }
-        )
+            )
+
+            NavigationBarItem(
+                selected = currentRoute == "bookMarks", onClick = {
+                    navController.navigate("bookMarks")
+                }, icon = {
+                    Icon(
+                        Icons.Filled.Favorite,
+                        contentDescription = "bookMarks",
+                    )
+                }, label = {
+                    Text("BookMarks")
+                }, colors = NavigationBarItemDefaults.colors(
+
+                    selectedIconColor = Primary,
+
+                    selectedTextColor = Primary,
+
+                    indicatorColor = Primary.copy(
+                        alpha = 0.12f
+                    ), unselectedIconColor = TextSecondary, unselectedTextColor = TextSecondary
+                )
+            )
+        }
     }
 }
