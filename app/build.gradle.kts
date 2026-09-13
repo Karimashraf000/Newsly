@@ -6,6 +6,16 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+val newsApiKey = localProperties.getProperty("NEWS_API_KEY") ?: ""
+
 android {
     namespace = "com.example.newsapp"
     compileSdk {
@@ -20,6 +30,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "NEWS_API_KEY",
+            "\"$newsApiKey\""
+        )
 
     }
 

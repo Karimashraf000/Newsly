@@ -3,7 +3,7 @@ package com.example.newsapp.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.utils.constants.ApiConstants
+import com.example.newsapp.BuildConfig
 import com.example.newsapp.data.repository.NewsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +20,7 @@ class HomeViewModel( private val repository: NewsRepository) : ViewModel() {
             )
             try {
                 val result = repository.getTopHeadLines(
-                    apiKey = ApiConstants.NEWS_API_KEY,
+                    apiKey = BuildConfig.NEWS_API_KEY,
                     country = "us"
                 )
                 _newsArticlesState.value =  _newsArticlesState.value.copy(
