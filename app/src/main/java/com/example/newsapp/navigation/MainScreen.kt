@@ -3,9 +3,9 @@ package com.example.newsapp.navigation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -38,6 +38,16 @@ import com.example.newsapp.ui.search.SearchScreen
 import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.Primary
 import com.example.newsapp.ui.theme.TextSecondary
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun MainScreen() {
@@ -69,32 +79,73 @@ fun MainScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopAppBar() {
+fun MainTopAppBar(
+    hasUnreadNotifications: Boolean = true,
+    onNotificationClick: () -> Unit = {}
+) {
     TopAppBar(
         title = {
-        Text(
-            text = "Newsly",
-            fontFamily = PlayfairDisplay,
-            color = Primary,
-            fontWeight = FontWeight.Bold
+            Text(
+                text = "Newsly",
+                fontFamily = PlayfairDisplay,
+                color = Primary,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        navigationIcon = {
+            Surface(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .size(38.dp),
+                shape = RoundedCornerShape(12.dp),
+                color = Primary.copy(alpha = 0.1f)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.newsly_logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.padding(7.dp)
+                )
+            }
+        },
+        actions = {
+            Box(
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clickable { onNotificationClick() },
+                    shape = RoundedCornerShape(12.dp),
+                    color = Primary.copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "Notifications",
+                            tint = Primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                if (hasUnreadNotifications) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = (-2).dp, y = 2.dp)
+                            .size(9.dp)
+                            .background(color = Color(0xFFE53935), shape = CircleShape)
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent
         )
-    }, navigationIcon = {
-        Image(
-            painter = painterResource(id = R.drawable.newsly_logo),
-            contentDescription = "Logo",
-            modifier = Modifier
-                .size(35.dp)
-                .padding(5.dp)
-        )
-    }, actions = {
-        Icon(
-            Icons.Filled.Search,
-            contentDescription = "Search",
-            tint = Primary,
-            modifier = Modifier.padding(5.dp)
-        )
-    })
+    )
 }
+
 
 @Composable
 fun MainBottomAppBar(
@@ -114,7 +165,7 @@ fun MainBottomAppBar(
             modifier = Modifier
                 .padding(0.dp)
                 .border(0.dp, Primary, shape = RoundedCornerShape(30.dp))
-                .height(67.dp)
+                .wrapContentHeight()
         ) {
             NavigationBarItem(
                 selected = currentRoute == "home", onClick = {
