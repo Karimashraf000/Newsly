@@ -2,7 +2,7 @@ package com.example.newsapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Primary = Color(0xFF1A237E)
+val Primary = Color(0xFF0001FC)
 val Secondary = Color(0xFF3F51B5)
 
 val Background = Color(0xFFFBF9F9)
@@ -13,3 +13,5 @@ val TextSecondary = Color(0xFF454652)
 
 val Error = Color(0xFFBA1A1A)
 val White = Color(0xFFFFFFFF)
+
+val BottomNavBackground = Color(0x00E0E4FF)

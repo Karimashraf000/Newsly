@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.newsapp.ui.theme.Background
-import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.Primary
 import com.example.newsapp.ui.theme.TextSecondary
@@ -84,7 +83,7 @@ fun OnBoardingPage(
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
-                fontFamily = PlayfairDisplay,
+                fontFamily = PlusJakartaSans,
                 lineHeight = 30.sp
             )
             Text(

@@ -25,13 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.newsapp.data.model.Article
-import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.TextPrimary
 
 @Composable
-fun ArticleCard(article: Article) {
+fun ArticleCard(article: Article , onClick: () -> Unit) {
     Surface(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         color = Color.White,
         shape = RoundedCornerShape(16.dp),
@@ -57,7 +57,7 @@ fun ArticleCard(article: Article) {
                 Text(
                     text = article.title,
                     color = TextPrimary,
-                    fontFamily = PlayfairDisplay,
+                    fontFamily = PlusJakartaSans,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,

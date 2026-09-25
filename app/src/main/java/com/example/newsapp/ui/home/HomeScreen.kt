@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,22 +23,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.repository.NewsRepository
 import com.example.newsapp.ui.home.components.ArticleCard
 import com.example.newsapp.ui.home.components.TrendingNewsCarousel
-import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.TextPrimary
+import com.example.newsapp.ui.viewmodels.NewsViewModel
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onArticleClick: (Article) -> Unit
 ) {
     val repository = remember {
         NewsRepository()
     }
 
-    val viewModel: HomeViewModel = viewModel(
+    val viewModel: NewsViewModel = viewModel(
         factory = HomeViewModelFactory(repository)
     )
 
@@ -87,12 +87,12 @@ fun HomeScreen(
                 ) {
                     item {
                         Column {
-                            TrendingNewsCarousel(items = state.articles)
+                            TrendingNewsCarousel(items = state.articles, onArticleClick = onArticleClick)
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "Breaking News",
                                 color = TextPrimary,
-                                fontFamily = PlayfairDisplay,
+                                fontFamily = PlusJakartaSans,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -103,7 +103,10 @@ fun HomeScreen(
                         items = state.articles,
                         key = { it.url }
                     ) { article ->
-                        ArticleCard(article = article)
+                        ArticleCard(
+                            article = article,
+                            onClick = { onArticleClick(article) }
+                            )
                     }
                 }
             }

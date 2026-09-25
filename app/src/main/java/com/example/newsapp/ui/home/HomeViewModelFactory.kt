@@ -3,6 +3,7 @@ package com.example.newsapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.newsapp.data.repository.NewsRepository
+import com.example.newsapp.ui.viewmodels.NewsViewModel
 
 class HomeViewModelFactory(
     private val repository: NewsRepository
@@ -10,9 +11,9 @@ class HomeViewModelFactory(
     override fun <T : ViewModel> create(
         modelClass: Class<T>
     ): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(repository) as T
+            return NewsViewModel(repository) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class")

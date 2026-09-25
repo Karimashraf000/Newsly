@@ -1,15 +1,16 @@
-package com.example.newsapp.ui.home
-
+package com.example.newsapp.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.BuildConfig
+import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.repository.NewsRepository
+import com.example.newsapp.ui.home.HomeUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel( private val repository: NewsRepository) : ViewModel() {
+class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
     private val _newsArticlesState = MutableStateFlow(HomeUiState())
     val newsArticlesState = _newsArticlesState.asStateFlow()
 

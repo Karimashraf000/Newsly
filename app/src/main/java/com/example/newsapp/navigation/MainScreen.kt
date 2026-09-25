@@ -33,9 +33,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.newsapp.ui.bookmarks.BookmarkedNewsScreen
+import com.example.newsapp.data.model.Article
 import com.example.newsapp.ui.home.HomeScreen
 import com.example.newsapp.ui.search.SearchScreen
-import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.Primary
 import com.example.newsapp.ui.theme.TextSecondary
 import androidx.compose.foundation.background
@@ -48,13 +48,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.example.newsapp.ui.theme.BottomNavBackground
+import com.example.newsapp.ui.theme.PlusJakartaSans
+import com.example.newsapp.ui.theme.Surface
 
 @Composable
-fun MainScreen() {
+fun MainScreen(onArticleClick: (Article) -> Unit, ) {
     val navController = rememberNavController()
 
     Scaffold(
         topBar = { MainTopAppBar() },
+        modifier = Modifier.background(color = Surface),
         bottomBar = { MainBottomAppBar(navController) }) { innerPadding ->
 
         NavHost(
@@ -63,7 +67,7 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("home") {
-                HomeScreen()
+                HomeScreen(onArticleClick = onArticleClick)
             }
 
             composable("search") {
@@ -87,7 +91,7 @@ fun MainTopAppBar(
         title = {
             Text(
                 text = "Newsly",
-                fontFamily = PlayfairDisplay,
+                fontFamily = PlusJakartaSans,
                 color = Primary,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -159,13 +163,23 @@ fun MainBottomAppBar(
         modifier = Modifier
             .clip(
                 RoundedCornerShape(30.dp)
-            ).padding(8.dp)
+            ).padding(bottom = 25.dp, start = 15.dp , end = 15.dp).background(Color.Transparent)
     ) {
         NavigationBar(
             modifier = Modifier
                 .padding(0.dp)
-                .border(0.dp, Primary, shape = RoundedCornerShape(30.dp))
-                .wrapContentHeight()
+                .wrapContentHeight(
+                    align = Alignment.CenterVertically
+                )
+                .clip(RoundedCornerShape(30.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = Primary,
+                    shape = RoundedCornerShape(30.dp)
+                )
+            ,
+            containerColor = BottomNavBackground
+
         ) {
             NavigationBarItem(
                 selected = currentRoute == "home", onClick = {
@@ -212,15 +226,15 @@ fun MainBottomAppBar(
             )
 
             NavigationBarItem(
-                selected = currentRoute == "bookMarks", onClick = {
-                    navController.navigate("bookMarks")
+                selected = currentRoute == "bookmarks", onClick = {
+                    navController.navigate("bookmarks")
                 }, icon = {
                     Icon(
                         Icons.Filled.Favorite,
-                        contentDescription = "bookMarks",
+                        contentDescription = "bookmarks",
                     )
                 }, label = {
-                    Text("BookMarks")
+                    Text("bookmarks")
                 }, colors = NavigationBarItemDefaults.colors(
 
                     selectedIconColor = Primary,

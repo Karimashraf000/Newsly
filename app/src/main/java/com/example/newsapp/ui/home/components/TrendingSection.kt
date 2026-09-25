@@ -1,6 +1,7 @@
 package com.example.newsapp.ui.home.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,17 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.newsapp.data.model.Article
-import com.example.newsapp.ui.theme.PlayfairDisplay
 import com.example.newsapp.ui.theme.PlusJakartaSans
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrendingNewsCarousel(
-    items: List<Article> = emptyList()
+    items: List<Article> = emptyList(),
+    onArticleClick: (Article) -> Unit = {}
 ) {
     if (items.isEmpty()) return
     HorizontalMultiBrowseCarousel(
-        state = rememberCarouselState { 7 },
+        state = rememberCarouselState { minOf(items.size, 10) },
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
@@ -59,6 +60,7 @@ fun TrendingNewsCarousel(
                 .height(220.dp)
                 .maskClip(MaterialTheme.shapes.extraLarge)
                 .clip(MaterialTheme.shapes.extraLarge)
+                .clickable { onArticleClick(item) }
                 .background(Color.DarkGray)
         ) {
             AsyncImage(
@@ -111,7 +113,7 @@ fun TrendingNewsCarousel(
                 Text(
                     text = item.title,
                     color = Color.White,
-                    fontFamily = PlayfairDisplay,
+                    fontFamily = PlusJakartaSans,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Bold,
                     lineHeight = MaterialTheme.typography.titleLarge.fontSize * 1.15,

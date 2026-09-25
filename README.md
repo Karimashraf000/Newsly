@@ -71,7 +71,7 @@ com.example.newsapp
 ├── ui
 │   ├── home
 │   │   ├── HomeScreen.kt
-│   │   ├── HomeViewModel.kt
+│   │   ├── NewsViewModel.kt
 │   │   ├── HomeUiState.kt
 │   │   └── HomeViewModelFactory.kt
 │   │
