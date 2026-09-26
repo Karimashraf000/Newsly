@@ -15,3 +15,6 @@ val Error = Color(0xFFBA1A1A)
 val White = Color(0xFFFFFFFF)
 
 val BottomNavBackground = Color(0x00E0E4FF)
+val TextFieldBackground = Color(0xFFE7E7F5)
+val TextFieldText = Color(0xFF191B25)
+val TextFieldIcon= Color(0xFF767683)

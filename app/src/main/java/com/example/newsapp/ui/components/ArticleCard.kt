@@ -1,6 +1,8 @@
-package com.example.newsapp.ui.home.components
+package com.example.newsapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,12 +33,17 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.ui.theme.PlusJakartaSans
+import com.example.newsapp.ui.theme.Primary
 import com.example.newsapp.ui.theme.TextPrimary
 
 @Composable
-fun ArticleCard(article: Article , onClick: () -> Unit) {
+fun ArticleCard(
+    article: Article,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
+    onClick: () -> Unit
+) {
     Surface(
-        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         color = Color.White,
         shape = RoundedCornerShape(16.dp),
@@ -40,6 +52,7 @@ fun ArticleCard(article: Article , onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable(onClick = onClick)
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -47,7 +60,7 @@ fun ArticleCard(article: Article , onClick: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text =  "General",
+                    text = "General",
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = PlusJakartaSans,
                     fontSize = 12.sp,
@@ -64,13 +77,30 @@ fun ArticleCard(article: Article , onClick: () -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = article.publishedAt,
-                    color = Color.Gray,
-                    fontFamily = PlusJakartaSans,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Normal
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = article.publishedAt.substring(0, minOf(10, article.publishedAt.length)),
+                        color = Color.Gray,
+                        fontFamily = PlusJakartaSans,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                    IconButton(
+                        onClick = onFavoriteClick,
+                        modifier = Modifier.size(28.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Favorite",
+                            tint = if (isFavorite) Primary else Color.Gray,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.width(12.dp))

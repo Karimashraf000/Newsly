@@ -19,32 +19,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.newsapp.data.local.NewsDatabase
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.repository.NewsRepository
-import com.example.newsapp.ui.home.components.ArticleCard
-import com.example.newsapp.ui.home.components.TrendingNewsCarousel
+import com.example.newsapp.ui.components.ArticleCard
+import com.example.newsapp.ui.components.TrendingNewsCarousel
 import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.TextPrimary
+import com.example.newsapp.ui.viewmodels.NewsViewModelFactory
 import com.example.newsapp.ui.viewmodels.NewsViewModel
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    onArticleClick: (Article) -> Unit
+    modifier: Modifier = Modifier, onArticleClick: (Article) -> Unit
 ) {
+    val context = LocalContext.current
     val repository = remember {
-        NewsRepository()
+        val dao = NewsDatabase.getDatabase(context).articleDao()
+        NewsRepository(dao)
     }
 
     val viewModel: NewsViewModel = viewModel(
-        factory = HomeViewModelFactory(repository)
+        factory = NewsViewModelFactory(repository)
     )
 
     val state by viewModel.newsArticlesState.collectAsState()
+    val favoriteArticles by viewModel.favoriteArticles.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getArticles()
@@ -57,8 +62,7 @@ fun HomeScreen(
         when {
             state.isLoading -> {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
                 }
@@ -66,8 +70,7 @@ fun HomeScreen(
 
             state.error != null -> {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = state.error ?: "Unknown error",
@@ -87,7 +90,9 @@ fun HomeScreen(
                 ) {
                     item {
                         Column {
-                            TrendingNewsCarousel(items = state.articles, onArticleClick = onArticleClick)
+                            TrendingNewsCarousel(
+                                items = state.articles, onArticleClick = onArticleClick
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "Breaking News",
@@ -100,13 +105,12 @@ fun HomeScreen(
                     }
 
                     items(
-                        items = state.articles,
-                        key = { it.url }
-                    ) { article ->
-                        ArticleCard(
-                            article = article,
-                            onClick = { onArticleClick(article) }
-                            )
+                        items = state.articles, key = { it.url }) { article ->
+                        ArticleCard(article = article, isFavorite = favoriteArticles.any {
+                            it.url == article.url
+                        }, onFavoriteClick = {
+                            viewModel.toggleFavorite(article)
+                        }, onClick = { onArticleClick(article) })
                     }
                 }
             }

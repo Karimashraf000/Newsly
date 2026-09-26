@@ -53,7 +53,7 @@ import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.Surface
 
 @Composable
-fun MainScreen(onArticleClick: (Article) -> Unit, ) {
+fun MainScreen(onArticleClick: (Article) -> Unit ) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -71,11 +71,13 @@ fun MainScreen(onArticleClick: (Article) -> Unit, ) {
             }
 
             composable("search") {
-                SearchScreen()
+                SearchScreen(
+                    onArticleClick = onArticleClick
+                )
             }
 
             composable("bookmarks") {
-                BookmarkedNewsScreen()
+                BookmarkedNewsScreen(onArticleClick = onArticleClick)
             }
         }
     }

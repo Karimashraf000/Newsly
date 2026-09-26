@@ -1,5 +1,7 @@
 package com.example.newsapp.ui.details
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,27 +13,50 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.newsapp.data.local.NewsDatabase
 import com.example.newsapp.data.model.Article
+import com.example.newsapp.data.repository.NewsRepository
+import com.example.newsapp.ui.viewmodels.NewsViewModelFactory
 import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.Primary
 import com.example.newsapp.ui.theme.Secondary
 import com.example.newsapp.ui.theme.TextPrimary
 import com.example.newsapp.ui.theme.TextSecondary
+import com.example.newsapp.ui.viewmodels.NewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(article: Article, navController: NavHostController) {
+    val context = LocalContext.current
+    val repository = remember {
+        val dao = NewsDatabase.getDatabase(context).articleDao()
+        NewsRepository(dao)
+    }
+    val viewModel: NewsViewModel = viewModel(
+        factory = NewsViewModelFactory(repository)
+    )
+    val favoriteArticles by viewModel.favoriteArticles.collectAsState()
+
+    val isFavorite = favoriteArticles.any {
+        it.url == article.url
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,17 +83,30 @@ fun DetailsScreen(article: Article, navController: NavHostController) {
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = {
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, "${article.title}\n${article.url}")
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        context.startActivity(shareIntent)
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Share,
-                            contentDescription = "Localized description"
+                            contentDescription = "Share",
+                            tint = Primary
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = { /* do something */ }) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    IconButton(onClick = {
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
+                        context.startActivity(browserIntent)
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Info,
-                            contentDescription = "Localized description"
+                            contentDescription = "Open in Browser",
+                            tint = Primary
                         )
                     }
                 }
@@ -119,7 +157,7 @@ fun DetailsScreen(article: Article, navController: NavHostController) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = article.publishedAt.substring(0, 10),
+                    text = article.publishedAt.substring(0, minOf(10, article.publishedAt.length)),
                     fontSize = 12.sp,
                     fontFamily = PlusJakartaSans,
                     color = Color.Gray
@@ -161,18 +199,20 @@ fun DetailsScreen(article: Article, navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { /*TODO*/ },
-                colors = ButtonColors(
-                    containerColor = Primary,
+                onClick = {
+                    viewModel.toggleFavorite(article)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isFavorite) Color.Gray else Primary,
                     contentColor = Color.White,
                     disabledContainerColor = Color.Gray,
                     disabledContentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(18.dp),
                 modifier = Modifier
-                    .padding(22.dp)
+                    .padding(vertical = 22.dp)
                     .fillMaxWidth()
-                    .size(54.dp)
+                    .height(54.dp)
                     .shadow(
                         elevation = 7.dp,
                         shape = RoundedCornerShape(18.dp),
@@ -180,7 +220,7 @@ fun DetailsScreen(article: Article, navController: NavHostController) {
                     )
             ) {
                 Text(
-                    text = "Save To Favorites",
+                    text = if (isFavorite) "Remove from Favorites" else "Save To Favorites",
                     fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.Bold,
                     color = Color.White

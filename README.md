@@ -24,7 +24,6 @@ The core project structure and networking layer are currently being implemented.
 * 💾 Store bookmarked articles locally
 * ⏳ Loading and error states
 * 📱 Modern Jetpack Compose UI
-* 🌙 Dark/Light theme support
 
 ---
 
@@ -52,7 +51,7 @@ The project follows the **MVVM architecture** with a separation between the data
 
 ```text
 com.example.newsapp
-│
+
 ├── data
 │   ├── model
 │   │   ├── Article.kt
@@ -64,6 +63,8 @@ com.example.newsapp
 │   │
 │   ├── local
 │   │   └── NewsDatabase.kt
+│   │   └── ArticleDao.kt
+│   │   └── ArticleEntity.kt
 │   │
 │   └── repository
 │       └── NewsRepository.kt
@@ -71,15 +72,14 @@ com.example.newsapp
 ├── ui
 │   ├── home
 │   │   ├── HomeScreen.kt
-│   │   ├── NewsViewModel.kt
 │   │   ├── HomeUiState.kt
-│   │   └── HomeViewModelFactory.kt
 │   │
 │   ├── details
 │   │   └── DetailsScreen.kt
 │   │
 │   ├── search
 │   │   └── SearchScreen.kt
+│   │   └── SearchUiState.kt
 │   │
 │   ├── bookmarks
 │   │   └── BookmarksScreen.kt
@@ -93,10 +93,13 @@ com.example.newsapp
 │   │   └── OnBoardingScreen.kt
 │   │   └── OnBoardingPage.kt
 │   │
+│   ├── viewModels
+│   │   └── NewsViewModel.kt
+│   │   ├── NewsViewModelFactory.kt
+│   │
 │   └── utils 
 |         ├── constants 
 |         │   ├── ApiConstants.kt
-|         │   └── ThemeConstants.kt
 |         │
 |         ├── theme
 │              ├── Color.kt
@@ -147,31 +150,6 @@ Displays detailed information about a selected article.
 
 Displays articles saved by the user for later reading.
 
----
-
-## 🔌 API
-
-The application uses a news API to retrieve articles.
-
-The networking layer is implemented using:
-
-```text
-Retrofit
-    ↓
-NewsApiService
-    ↓
-NewsRepository
-    ↓
-HomeViewModel
-    ↓
-HomeUiState
-    ↓
-HomeScreen
-```
-
-This separation keeps networking logic independent from the UI.
-
----
 
 
 ## 📸 Screenshots
@@ -214,7 +192,7 @@ The architecture and features may change as I continue learning and improving th
 **Karim Ashraf**
 
 Computer Science Student
-Android / Kotlin Developer
+Mobile Application Developer
 
 ---
 
