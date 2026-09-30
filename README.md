@@ -2,28 +2,19 @@
 
 A modern **Android News Application** built with **Kotlin** and **Jetpack Compose**.
 
-The project is currently **under development** and is being built as a learning project to practice modern Android development concepts, including **Jetpack Compose, MVVM, Retrofit, Repository Pattern, StateFlow, and Room**.
+The project is built to practice modern Android development concepts, including **Jetpack Compose, MVVM, Retrofit, Repository Pattern, StateFlow, and Room**.
 
 ---
 
-## 🚧 Project Status
+## 🚀 Features
 
-**In Development 🚧**
-
-The core project structure and networking layer are currently being implemented. More features and UI improvements will be added progressively.
-
----
-
-## ✨ Planned Features
-
-* 🏠 Browse the latest news
-* 🗂️ Browse news by category
-* 🔍 Search for articles
-* 📖 View full article details
-* 🔖 Bookmark/save articles
-* 💾 Store bookmarked articles locally
-* ⏳ Loading and error states
-* 📱 Modern Jetpack Compose UI
+* 🏠 Browse the latest top headlines and trending news
+* 🔍 Search for articles dynamically
+* 📖 View full article details with share and browser view actions
+* 🔖 Bookmark/save articles to favorites
+* 💾 Store and manage bookmarked articles locally using Room Database
+* ⏳ Loading and error states handling
+* 📱 Modern Jetpack Compose UI with Material 3
 
 ---
 
@@ -35,24 +26,28 @@ The core project structure and networking layer are currently being implemented.
 | **Jetpack Compose**    | UI development                     |
 | **MVVM**               | Application architecture           |
 | **Retrofit**           | REST API communication             |
-| **OkHttp**             | HTTP client and networking         |
 | **Gson**               | JSON serialization/deserialization |
 | **StateFlow**          | UI state management                |
 | **ViewModel**          | Business/UI logic                  |
-| **Room**               | Local database                     |
+| **Room**               | Local database for bookmarks       |
 | **Coroutines**         | Asynchronous programming           |
 | **Navigation Compose** | Screen navigation                  |
+| **Coil**               | Image loading                      |
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture & Project Structure
 
-The project follows the **MVVM architecture** with a separation between the data and UI layers.
+The project follows the **MVVM architecture** with a clear separation between the data and UI layers.
 
 ```text
 com.example.newsapp
-
 ├── data
+│   ├── local
+│   │   ├── ArticleDao.kt
+│   │   ├── ArticleEntity.kt
+│   │   └── NewsDatabase.kt
+│   │
 │   ├── model
 │   │   ├── Article.kt
 │   │   └── NewsResponse.kt
@@ -61,52 +56,48 @@ com.example.newsapp
 │   │   ├── NewsApiService.kt
 │   │   └── RetrofitInstance.kt
 │   │
-│   ├── local
-│   │   └── NewsDatabase.kt
-│   │   └── ArticleDao.kt
-│   │   └── ArticleEntity.kt
-│   │
 │   └── repository
 │       └── NewsRepository.kt
 │
+├── navigation
+│   ├── AppNavigation.kt
+│   └── MainScreen.kt
+│
 ├── ui
-│   ├── home
-│   │   ├── HomeScreen.kt
-│   │   ├── HomeUiState.kt
+│   ├── bookmarks
+│   │   └── BookmarkedNewsScreen.kt
+│   │
+│   ├── components
+│   │   ├── ArticleCard.kt
+│   │   └── TrendingSection.kt
 │   │
 │   ├── details
 │   │   └── DetailsScreen.kt
 │   │
-│   ├── search
-│   │   └── SearchScreen.kt
-│   │   └── SearchUiState.kt
+│   ├── home
+│   │   ├── HomeScreen.kt
+│   │   ├── HomeUiState.kt
+│   │   └── HomeViewModelFactory.kt
 │   │
-│   ├── favorites
-│   │   └── FavoritesScreen.kt
-│   │
-│   ├── components
-│   │   ├── NewsCard.kt
-│   │   ├── CategoryChip.kt
-│   │   └── LoadingScreen.kt
-│   │
-│   ├── onBoarding
+│   ├── onboarding
+│   │   ├── OnBoardingPage.kt
 │   │   └── OnBoardingScreen.kt
-│   │   └── OnBoardingPage.kt
 │   │
-│   ├── viewModels
-│   │   └── NewsViewModel.kt
-│   │   ├── NewsViewModelFactory.kt
+│   ├── search
+│   │   ├── SearchScreen.kt
+│   │   └── SearchUIState.kt
 │   │
-│   └── utils 
-|         ├── constants 
-|         │   ├── ApiConstants.kt
-|         │
-|         ├── theme
-│              ├── Color.kt
-│              ├── Theme.kt
-│              └── Type.kt
-├── navigation
-│   └── AppNavigation.kt
+│   ├── theme
+│   │   ├── Color.kt
+│   │   ├── Theme.kt
+│   │   └── Type.kt
+│   │
+│   └── viewmodels
+│       └── NewsViewModel.kt
+│
+├── utils
+│   └── constants
+│       └── ApiConstants.kt
 │
 └── MainActivity.kt
 ```
@@ -115,20 +106,18 @@ com.example.newsapp
 
 Responsible for handling and providing application data.
 
-* **model** — Contains the API/data models.
-* **remote** — Handles communication with the news API using Retrofit.
-* **local** — Responsible for local data storage using Room.
-* **repository** — Acts as the single source of data for the ViewModels.
+* **local** — Room database entities, DAO, and database instance for local bookmarking.
+* **model** — API and domain data models (Article, Source, NewsResponse).
+* **remote** — Retrofit service and instance for fetching headlines and search results.
+* **repository** — Single source of truth coordinating network data and local database favorites.
 
 ### UI Layer
 
-Responsible for displaying application content and handling user interactions.
-
-Each feature has its own UI components and ViewModel where needed.
+Responsible for displaying application content and handling user interactions using Jetpack Compose and ViewModels.
 
 ### Navigation
 
-`AppNavigation.kt` manages navigation between the application's screens using **Navigation Compose**.
+Managed via `AppNavigation.kt` and `MainScreen.kt` using **Navigation Compose** with bottom bar navigation and nested screen routing.
 
 ---
 
@@ -136,54 +125,19 @@ Each feature has its own UI components and ViewModel where needed.
 
 ### 🏠 Home
 
-Displays the latest news articles and allows users to browse different news categories.
+Displays top headlines and trending news carousel with quick bookmarking and article selection.
 
 ### 🔍 Search
 
-Allows users to search for specific news articles.
+Allows users to search for specific news articles with instant results and bookmarking support.
 
 ### 📖 Details
 
-Displays detailed information about a selected article.
+Displays full article content, publication details, and action buttons to share, open in browser, or toggle favorites.
 
 ### 🔖 Bookmarks
 
-Displays articles saved by the user for later reading.
-
-
-
-## 📸 Screenshots
-
-> Screenshots will be added as the UI development progresses.
-
----
-## 🧠 What I'm Learning
-
-This project is being developed as a practical way to learn and strengthen my knowledge of modern Android development.
-
-Some of the concepts being practiced:
-
-* Jetpack Compose
-* MVVM Architecture
-* ViewModel
-* StateFlow
-* UI State management
-* Retrofit
-* REST APIs
-* Repository Pattern
-* Coroutines
-* Room Database
-* Navigation Compose
-* Dependency separation
-* Reusable Compose components
-* Error and loading state handling
-
----
-## 📌 Project Status
-
-This project is **actively under development**.
-
-The architecture and features may change as I continue learning and improving the application.
+Displays all favorite articles saved locally by the user for offline reading.
 
 ---
 
@@ -191,8 +145,7 @@ The architecture and features may change as I continue learning and improving th
 
 **Karim Ashraf**
 
-Computer Science Student
-Mobile Application Developer
+Computer Science Student & Mobile Application Developer
 
 ---
 
