@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -54,63 +58,74 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.getArticles()
     }
+    val snackBarHostState = remember { SnackbarHostState() }
 
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
+    LaunchedEffect(Unit) {
+        viewModel.favoriteMessage.collect { message ->
+            snackBarHostState.showSnackbar(message)
+        }
+    }
 
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+    ) { innerPadding ->
+        Column(
+            modifier = modifier.fillMaxSize().padding(innerPadding)
+        ) {
 
-            state.error != null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.error ?: "Unknown error",
-                        color = TextPrimary,
-                        fontFamily = PlusJakartaSans
-                    )
-                }
-            }
-
-            else -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(bottom = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    item {
-                        Column {
-                            TrendingNewsCarousel(
-                                items = state.articles, onArticleClick = onArticleClick
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Breaking News",
-                                color = TextPrimary,
-                                fontFamily = PlusJakartaSans,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
+                }
 
-                    items(
-                        items = state.articles, key = { it.url }) { article ->
-                        ArticleCard(article = article, isFavorite = favoriteArticles.any {
-                            it.url == article.url
-                        }, onFavoriteClick = {
-                            viewModel.toggleFavorite(article)
-                        }, onClick = { onArticleClick(article) })
+                state.error != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.error ?: "Unknown error",
+                            color = TextPrimary,
+                            fontFamily = PlusJakartaSans
+                        )
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        contentPadding = PaddingValues(bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        item {
+                            Column {
+                                TrendingNewsCarousel(
+                                    items = state.articles, onArticleClick = onArticleClick
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Breaking News",
+                                    color = TextPrimary,
+                                    fontFamily = PlusJakartaSans,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        items(
+                            items = state.articles, key = { it.url }) { article ->
+                            ArticleCard(article = article, isFavorite = favoriteArticles.any {
+                                it.url == article.url
+                            }, onFavoriteClick = {
+                                viewModel.toggleFavorite(article)
+                            }, onClick = { onArticleClick(article) })
+                        }
                     }
                 }
             }

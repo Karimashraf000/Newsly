@@ -81,8 +81,8 @@ com.example.newsapp
 │   │   └── SearchScreen.kt
 │   │   └── SearchUiState.kt
 │   │
-│   ├── bookmarks
-│   │   └── BookmarksScreen.kt
+│   ├── favorites
+│   │   └── FavoritesScreen.kt
 │   │
 │   ├── components
 │   │   ├── NewsCard.kt

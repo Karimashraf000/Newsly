@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.bookmarks
+package com.example.newsapp.ui.favorites
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,7 +25,7 @@ import com.example.newsapp.ui.theme.TextPrimary
 import com.example.newsapp.ui.viewmodels.NewsViewModel
 
 @Composable
-fun BookmarkedNewsScreen(
+fun FavoritesScreen(
     onArticleClick: (Article) -> Unit
 ) {
     val context = LocalContext.current

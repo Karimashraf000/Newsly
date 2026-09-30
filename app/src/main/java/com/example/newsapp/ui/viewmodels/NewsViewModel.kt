@@ -8,9 +8,11 @@ import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.repository.NewsRepository
 import com.example.newsapp.ui.home.HomeUiState
 import com.example.newsapp.ui.search.SearchUiState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -22,6 +24,9 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
 
     private val _searchState = MutableStateFlow(SearchUiState())
     val searchState = _searchState.asStateFlow()
+
+   private val _favoriteMessage = MutableSharedFlow<String>()
+    val favoriteMessage = _favoriteMessage.asSharedFlow()
 
     val favoriteArticles: StateFlow<List<Article>> =
         repository.favoriteArticles
@@ -43,8 +48,10 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
 
             if (isFavorite) {
                 repository.deleteFavorite(article)
+                _favoriteMessage.emit("Article removed from favorites")
             } else {
                 repository.insertFavorite(article)
+                _favoriteMessage.emit("Article added to favorites")
             }
         }
     }

@@ -32,7 +32,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.newsapp.ui.bookmarks.BookmarkedNewsScreen
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.ui.home.HomeScreen
 import com.example.newsapp.ui.search.SearchScreen
@@ -48,6 +47,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.example.newsapp.ui.favorites.FavoritesScreen
 import com.example.newsapp.ui.theme.BottomNavBackground
 import com.example.newsapp.ui.theme.PlusJakartaSans
 import com.example.newsapp.ui.theme.Surface
@@ -76,8 +76,8 @@ fun MainScreen(onArticleClick: (Article) -> Unit ) {
                 )
             }
 
-            composable("bookmarks") {
-                BookmarkedNewsScreen(onArticleClick = onArticleClick)
+            composable("favorites") {
+                FavoritesScreen(onArticleClick = onArticleClick)
             }
         }
     }
@@ -228,15 +228,15 @@ fun MainBottomAppBar(
             )
 
             NavigationBarItem(
-                selected = currentRoute == "bookmarks", onClick = {
-                    navController.navigate("bookmarks")
+                selected = currentRoute == "favorites", onClick = {
+                    navController.navigate("favorites")
                 }, icon = {
                     Icon(
                         Icons.Filled.Favorite,
-                        contentDescription = "bookmarks",
+                        contentDescription = "favorites",
                     )
                 }, label = {
-                    Text("bookmarks")
+                    Text("Favorites")
                 }, colors = NavigationBarItemDefaults.colors(
 
                     selectedIconColor = Primary,
